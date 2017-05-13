@@ -4,7 +4,7 @@ namespace oleglfed\LaravelDDD;
 
 use Illuminate\Support\ServiceProvider;
 
-class ApiDocGeneratorServiceProvider extends ServiceProvider
+class LaravelDddServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application events.
