@@ -15,15 +15,16 @@ class GenerateDomain extends Command
 
     public $infrastructureContract =
         __DIR__ . '/../../resources/Infrastructures/Template/Contracts/EloquentTemplateRepositoryInterface';
-    public $infrastructureClass = __DIR__ . '/../../Infrastructures/Template/EloquentTemplateRepository';
+    public $infrastructureClass = __DIR__ . '/../../resources/Infrastructures/Template/EloquentTemplateRepository';
 
-    public $domainInterfaceContract  = __DIR__ . '/../../Domains/Template/Contracts/TemplateInterface';
-    public $domainRepositoryContract = __DIR__ . '/../../Domains/Template/Contracts/TemplateRepositoryInterface';
-    public $domainServiceContract    = __DIR__ . '/../../Domains/Template/Contracts/TemplateServiceInterface';
+    public $domainInterfaceContract  = __DIR__ . '/../../resources/Domains/Template/Contracts/TemplateInterface';
+    public $domainRepositoryContract = __DIR__
+                                        . '/../../resources/Domains/Template/Contracts/TemplateRepositoryInterface';
+    public $domainServiceContract    = __DIR__ . '/../../resources/Domains/Template/Contracts/TemplateServiceInterface';
 
-    public $domainEloquent   = __DIR__ . '/../../Domains/Template/TemplateEloquent';
-    public $domainRepository = __DIR__ . '/../../Domains/Template/TemplateRepository';
-    public $domainService    = __DIR__ . '/../../Domains/Template/TemplateService';
+    public $domainEloquent   = __DIR__ . '/../../resources/Domains/Template/TemplateEloquent';
+    public $domainRepository = __DIR__ . '/../../resources/Domains/Template/TemplateRepository';
+    public $domainService    = __DIR__ . '/../../resources/Domains/Template/TemplateService';
 
     /**
      * Domain Name
@@ -75,8 +76,6 @@ class GenerateDomain extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->setDomainPath(app_path($this->options('domain-path')));
-        $this->setInfrastructurePath(app_path($this->options('infrastructure-path')));
     }
 
     /**
@@ -86,6 +85,9 @@ class GenerateDomain extends Command
      */
     public function handle()
     {
+        $this->setDomainPath(app_path($this->option('domain-path')));
+        $this->setInfrastructurePath(app_path($this->option('infrastructure-path')));
+
         $this->name = ucfirst($this->argument('name'));
         $this->table = $this->option('table');
         $this->directory = $this->option('directory');
@@ -112,7 +114,7 @@ class GenerateDomain extends Command
         //Copping Domains
         $this->copyDomain($this->name);
 
-        echo "Domain $this->name is created";
+        echo "\033[32m Domain $this->name is created \033[0m \n";
     }
 
     /**
@@ -129,8 +131,8 @@ class GenerateDomain extends Command
             File::makeDirectory($this->getInfrastructurePath());
         }
 
-        $this->setDomainPath($this->getDomainPath($this->getDirectory()));
-        $this->setInfrastructurePath($this->getInfrastructurePath($this->getDirectory()));
+        $this->setDomainPath($this->getDomainPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
+        $this->setInfrastructurePath($this->getInfrastructurePath(DIRECTORY_SEPARATOR . $this->getDirectory()));
 
         if (!File::exists($this->getDomainPath())) {
             File::makeDirectory($this->getDomainPath());

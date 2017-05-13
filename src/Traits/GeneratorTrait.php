@@ -111,6 +111,7 @@ trait GeneratorTrait
             '{interfaceGetters}',
             '{fillable}',
             '{repository}',
+            '{directory}',
         ];
 
         $replacements = [
@@ -120,7 +121,8 @@ trait GeneratorTrait
             $this->getSettersGetters($this->fields),
             $this->getSettersGetters($this->fields, true),
             $this->getFillable($this->fields),
-            $this->getRepositoryPayloads($this->fields)
+            $this->getRepositoryPayloads($this->fields),
+            $this->getDirectory()
         ];
 
         return str_replace($replacings, $replacements, $fileContent);
