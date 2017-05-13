@@ -5,7 +5,7 @@
         "DDD",
         "Laravel"
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "v.0.1",
     "homepage": "https://github.com/oleglfed/laravel-ddd",
     "authors": [
         {
@@ -13,6 +13,7 @@
             "email": "oleg.fedoliak@gmail.com"
         }
     ],
+    "license": "MIT",
     "require": {
         "php": ">=5.5.0",
         "oleglfed/laravel-ddd": "dev-master"
