@@ -1,0 +1,12 @@
+<?php
+namespace {namespace}Domains\{directory}\Contracts;
+
+use {namespace}Domains\Contracts\BaseEntityInterface;
+
+interface {name}Interface extends BaseEntityInterface
+{
+    const TABLE_NAME = '{table}';
+    const MORPH_NAME = '{table}';
+
+    {interfaceGetters}
+}

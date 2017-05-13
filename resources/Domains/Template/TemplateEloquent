@@ -1,0 +1,47 @@
+<?php
+
+namespace {namespace}Domains\{directory};
+
+use {namespace}Domains\{directory}\Contracts\{name}Interface;
+use {namespace}Infrastructures\EloquentAbstract;
+
+/**
+ * {name}Eloquent.
+ */
+class {name}Eloquent extends EloquentAbstract implements {name}Interface
+{
+    /**
+     * Table name.
+     *
+     * @var string
+     */
+    protected $table =  {name}Interface::TABLE_NAME;
+
+    protected $primaryKey = 'id';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        {fillable}
+    ];
+
+    protected $searchable = [
+        {fillable}
+    ];
+
+    protected $orderable = [
+        {fillable}
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
+
+    {getters}
+}

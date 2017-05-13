@@ -1,0 +1,64 @@
+<?php
+
+namespace {namespace}Domains\{directory}\Contracts;
+
+use {namespace}Domains\Contracts\HasEloquentStorageRepositoryInterface;
+use {namespace}Infrastructures\{directory}\Contracts\Eloquent{name}RepositoryInterface;
+use {namespace}Domains\Contracts\BaseEntityInterface;
+use Closure;
+
+/**
+ * Interface {name}RepositoryInterface.
+ */
+interface {name}RepositoryInterface
+{
+    /**
+     * {name}RepositoryInterface constructor.
+     *
+     * @param Eloquent{name}RepositoryInterface $eloquent
+     */
+    public function __construct(Eloquent{name}RepositoryInterface $eloquent);
+
+    /**
+     * Create {name}.
+     *
+     * @param {name}Interface ${name}
+     *
+     * @return mixed
+     */
+    public function create({name}Interface ${name});
+
+    /**
+     * Update {name}.
+     *
+     * @param {name}Interface ${name}
+     *
+     * @return mixed
+     */
+    public function update({name}Interface ${name});
+
+    /**
+     * Delete {name}.
+     *
+     * @param {name}Interface ${name}
+     *
+     * @return mixed
+     */
+    public function delete({name}Interface ${name});
+
+    /**
+     * Get {name}.
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function get($id);
+
+    /**
+     * Lists {name}s.
+     *
+     * @return mixed
+     */
+    public function lists();
+}

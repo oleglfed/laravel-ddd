@@ -1,0 +1,10 @@
+<?php
+
+namespace {namespace}Infrastructures\{directory}\Contracts;
+
+use {namespace}Infrastructures\Contracts\PersistenceStorageRepositoryInterface;
+
+interface Eloquent{name}RepositoryInterface extends PersistenceStorageRepositoryInterface
+{
+
+}
