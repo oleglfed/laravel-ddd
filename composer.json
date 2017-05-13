@@ -1,11 +1,11 @@
 {
     "name": "oleglfed/laravel-ddd",
-    "description": "Generates domains for laravel Domain Driven Development",
+    "description": "Generates domains for laravel Domain Driven Development 1",
     "keywords": [
         "DDD",
         "Laravel"
     ],
-    "homepage": "https://github.com/oleglfed/LaravelDDD",
+    "homepage": "https://github.com/oleglfed/laravel-ddd",
     "authors": [
         {
             "name": "Oleg Fedoliak",
