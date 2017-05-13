@@ -5,6 +5,7 @@
         "DDD",
         "Laravel"
     ],
+    "minimum-stability": "dev",
     "homepage": "https://github.com/oleglfed/laravel-ddd",
     "authors": [
         {
