@@ -1,6 +1,6 @@
 {
     "name": "oleglfed/laravel-ddd",
-    "description": "Generates domains for laravel Domain Driven Development 1",
+    "description": "Generates domains for laravel Domain Driven Development",
     "keywords": [
         "DDD",
         "Laravel"
@@ -14,7 +14,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=5.5.0",
+        "oleglfed/laravel-ddd": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0 || ~5.0",
