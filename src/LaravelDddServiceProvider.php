@@ -23,12 +23,10 @@ class LaravelDddServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['make.domain'] = $this->app->share(function () {
-            return new GenerateDomain();
-        });
-
-        $this->commands([
-            'make.domain',
-        ]);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateDomain::class,
+            ]);
+        }
     }
 }
