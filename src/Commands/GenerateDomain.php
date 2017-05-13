@@ -93,13 +93,13 @@ class GenerateDomain extends Command
         $this->directory = $this->option('directory');
 
         //If table is not defined, assumed table name is equal to domain
-        if (!$this->table) {
-            $this->table = $this->name;
+        if (!$this->getTable()) {
+            $this->table = $this->getName();
         }
 
         //If directory is not set we use domain name as directory
-        if (!$this->directory) {
-            $this->directory = $this->name;
+        if (!$this->getDirectory()) {
+            $this->directory = $this->getName();
         }
 
         //Get DB fields
