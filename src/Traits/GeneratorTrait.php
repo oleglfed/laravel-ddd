@@ -87,7 +87,8 @@ trait GeneratorTrait
     public function test$testName()
     {
         \$controlValue = rand(1, 999);
-        \$this->assertEquals(\$this->modelUnderTest->$setter(\$controlValue), \$this->modelUnderTest->$getter());
+        \$this->modelUnderTest->$setter(\$controlValue)
+        \$this->assertEquals(\$controlValue, \$this->modelUnderTest->$getter());
     }\n";
         }
 
@@ -104,6 +105,20 @@ trait GeneratorTrait
         foreach ($fields as $field) {
             $getter = 'get' . studly_case($field);
             $test .= "\n            ->shouldReceive('$getter')->andReturn('test')";
+        }
+
+        return $test;
+    }
+
+    /**
+     * @param $fields
+     * @return null|string
+     */
+    public function getRepositoryDataTests($fields)
+    {
+        $test = null;
+        foreach ($fields as $field) {
+            $test .= "'$field' => 1,";
         }
 
         return $test;
@@ -153,6 +168,7 @@ trait GeneratorTrait
             '{directory}',
             '{eloquentTest}',
             '{repositoryTest}',
+            '{repositoryTestData}',
         ];
 
         $replacements = [
@@ -166,7 +182,8 @@ trait GeneratorTrait
             $this->getRepositoryPayloads($this->fields),
             $this->getDirectory(),
             $this->getEloquentTests($this->fields),
-            $this->getRepositoryTests($this->fields)
+            $this->getRepositoryTests($this->fields),
+            $this->getRepositoryDataTests($this->fields),
         ];
 
         return str_replace($replacings, $replacements, $fileContent);

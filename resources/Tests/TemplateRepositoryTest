@@ -36,8 +36,9 @@ class {name}RepositoryTest extends TestCase
      */
     public function testCreate()
     {
-        $data = $this->factory({name}Eloquent::class)->make()->toArray();
         $object = m::mock({name}Interface::class);
+
+        $data = {repositoryTestData};
 
         $object{repositoryTest};
 
@@ -66,7 +67,8 @@ class {name}RepositoryTest extends TestCase
     public function testUpdate()
     {
         $id = 1;
-        $data = $this->factory({name}Eloquent::class)->make()->toArray();
+        $data = {repositoryTestData};
+
         $object = m::mock({name}Interface::class);
         $object->shouldReceive('getKey')->andReturn($id);
 
