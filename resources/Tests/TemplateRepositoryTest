@@ -38,7 +38,7 @@ class {name}RepositoryTest extends TestCase
     {
         $object = m::mock({name}Interface::class);
 
-        $data = {repositoryTestData};
+        $data = [{repositoryTestData}];
 
         $object{repositoryTest};
 
@@ -67,7 +67,7 @@ class {name}RepositoryTest extends TestCase
     public function testUpdate()
     {
         $id = 1;
-        $data = {repositoryTestData};
+        $data = [{repositoryTestData}];
 
         $object = m::mock({name}Interface::class);
         $object->shouldReceive('getKey')->andReturn($id);

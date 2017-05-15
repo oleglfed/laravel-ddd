@@ -87,7 +87,7 @@ trait GeneratorTrait
     public function test$testName()
     {
         \$controlValue = rand(1, 999);
-        \$this->modelUnderTest->$setter(\$controlValue)
+        \$this->modelUnderTest->$setter(\$controlValue);
         \$this->assertEquals(\$controlValue, \$this->modelUnderTest->$getter());
     }\n";
         }
