@@ -3,7 +3,7 @@
 namespace {namespace}Domains\{directory};
 
 use {namespace}Domains\BaseServiceTrait;
-use {namespace}Domains\{directory}{directory}\Contracts\{name}RepositoryInterface;
+use {namespace}Domains\{directory}\Contracts\{name}RepositoryInterface;
 use {namespace}Domains\{directory}\Contracts\{name}ServiceInterface;
 use {namespace}Domains\{directory}\Contracts\{name}Interface;
 use {namespace}Domains\Contracts\BaseEntityInterface;
