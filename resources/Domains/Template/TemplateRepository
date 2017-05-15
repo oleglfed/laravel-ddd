@@ -1,12 +1,12 @@
 <?php
 
-namespace getLaunched\Domains\{directory};
+namespace {namespace}Domains\{directory};
 
-use getLaunched\Domains\{directory}\Contracts\{name}RepositoryInterface;
-use getLaunched\Infrastructures\{directory}\Contracts\Eloquent{name}RepositoryInterface;
-use getLaunched\Domains\{directory}\Contracts\{name}Interface;
-use getLaunched\Domains\RepositoryAbstract;
-use getLaunched\Domains\Contracts\BaseEntityInterface;
+use {namespace}Domains\{directory}\Contracts\{name}RepositoryInterface;
+use {namespace}Infrastructures\{directory}\Contracts\Eloquent{name}RepositoryInterface;
+use {namespace}Domains\{directory}\Contracts\{name}Interface;
+use {namespace}Domains\RepositoryAbstract;
+use {namespace}Domains\Contracts\BaseEntityInterface;
 use Closure;
 
 /**

@@ -72,6 +72,44 @@ trait GeneratorTrait
     }
 
     /**
+     * @param $fields
+     * @return null|string
+     */
+    public function getEloquentTests($fields)
+    {
+        $test = null;
+        foreach ($fields as $field) {
+            $getter = 'get' . studly_case($field);
+            $testName = ucfirst($getter);
+            $setter = 'set' . studly_case($field);
+
+            $test .= "            
+    public function test$testName()
+    {
+        \$controlValue = rand(1, 999);
+        \$this->assertEquals(\$this->modelUnderTest->$setter(\$controlValue), \$this->modelUnderTest->$getter());
+    }\n";
+        }
+
+        return $test;
+    }
+
+    /**
+     * @param $fields
+     * @return null|string
+     */
+    public function getRepositoryTests($fields)
+    {
+        $test = null;
+        foreach ($fields as $field) {
+            $getter = 'get' . studly_case($field);
+            $test .= "\n            ->shouldReceive('$getter')->andReturn('test')";
+        }
+
+        return $test;
+    }
+
+    /**
      * @return mixed
      * @throws \Exception
      */
@@ -106,23 +144,29 @@ trait GeneratorTrait
         $replacings = [
             '{name}',
             '{namespace}',
+            '{testNamespace}',
             '{table}',
             '{getters}',
             '{interfaceGetters}',
             '{fillable}',
             '{repository}',
             '{directory}',
+            '{eloquentTest}',
+            '{repositoryTest}',
         ];
 
         $replacements = [
             $this->getName(),
             $this->getAppNamespace(),
+            $this->getTestsNamespace(),
             $this->getTable(),
             $this->getSettersGetters($this->fields),
             $this->getSettersGetters($this->fields, true),
             $this->getFillable($this->fields),
             $this->getRepositoryPayloads($this->fields),
-            $this->getDirectory()
+            $this->getDirectory(),
+            $this->getEloquentTests($this->fields),
+            $this->getRepositoryTests($this->fields)
         ];
 
         return str_replace($replacings, $replacements, $fileContent);
@@ -155,6 +199,16 @@ trait GeneratorTrait
         return $this->infrastructurePath . $path;
     }
 
+
+    /**
+     * @param $path
+     * @return string
+     */
+    public function getTestPath($path = null)
+    {
+        return $this->testPath . $path;
+    }
+
     /**
      * @param $path
      * @return string
@@ -171,6 +225,14 @@ trait GeneratorTrait
     public function setInfrastructurePath($path)
     {
         return $this->infrastructurePath = $path;
+    }
+    /**
+     * @param $path
+     * @return string
+     */
+    public function setTestPath($path)
+    {
+        return $this->testPath = $path;
     }
 
     /**
@@ -210,6 +272,23 @@ trait GeneratorTrait
                 if (realpath(app_path()) == realpath(base_path().'/'.$pathChoice)) {
                     return $namespace;
                 }
+            }
+        }
+
+        throw new \RuntimeException("Unable to detect application namespace.");
+    }
+
+    /**
+     * Returns App namespace
+     * @return int|string
+     */
+    protected function getTestsNamespace()
+    {
+        $composer = json_decode(file_get_contents(base_path().'/composer.json'), true);
+
+        foreach ((array) data_get($composer, 'autoload-dev.psr-4') as $namespace => $path) {
+            foreach ((array) $path as $pathChoice) {
+                    return $namespace;
             }
         }
 

@@ -12,6 +12,7 @@ class GenerateDomain extends Command
 
     public $domainPath;
     public $infrastructurePath;
+    public $testPath;
 
     public $infrastructureContract =
         __DIR__ . '/../../resources/Infrastructures/Template/Contracts/EloquentTemplateRepositoryInterface';
@@ -25,6 +26,12 @@ class GenerateDomain extends Command
     public $domainEloquent   = __DIR__ . '/../../resources/Domains/Template/TemplateEloquent';
     public $domainRepository = __DIR__ . '/../../resources/Domains/Template/TemplateRepository';
     public $domainService    = __DIR__ . '/../../resources/Domains/Template/TemplateService';
+
+    public $domainEloquentTest   = __DIR__ . '/../../resources/Tests/TemplateInterfaceTest';
+    public $domainRepositoryTest = __DIR__ . '/../../resources/Tests/TemplateRepositoryTest';
+    public $domainServiceTest    = __DIR__ . '/../../resources/Tests/TemplateServiceTest';
+
+    public $binding    = __DIR__ . '/../../resources/bind';
 
     /**
      * Domain Name
@@ -61,6 +68,7 @@ class GenerateDomain extends Command
                         {--directory= : Directory name of Domain}
                         {--domain-path=Domains : Domain directory. Default app/Domains}
                         {--infrastructure-path=Infrastructures : Infrastructure directory. Default app/Infrastructures}
+                        {--test-path=Tests/Domains : Tests path}
                         ';
 
     /**
@@ -87,6 +95,7 @@ class GenerateDomain extends Command
     {
         $this->setDomainPath(app_path($this->option('domain-path')));
         $this->setInfrastructurePath(app_path($this->option('infrastructure-path')));
+        $this->setTestPath(base_path($this->option('test-path')));
 
         $this->name = ucfirst($this->argument('name'));
         $this->table = $this->option('table');
@@ -114,6 +123,12 @@ class GenerateDomain extends Command
         //Copping Domains
         $this->copyDomain($this->name);
 
+        //Copping Tests
+        $this->copyTests($this->name);
+
+        //Copy binding
+        $this->copyBinding($this->name);
+
         echo "\033[32m Domain $this->name is created \033[0m \n";
     }
 
@@ -131,8 +146,13 @@ class GenerateDomain extends Command
             File::makeDirectory($this->getInfrastructurePath());
         }
 
+        if (!File::exists($this->getTestPath())) {
+            File::makeDirectory($this->getTestPath());
+        }
+
         $this->setDomainPath($this->getDomainPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
         $this->setInfrastructurePath($this->getInfrastructurePath(DIRECTORY_SEPARATOR . $this->getDirectory()));
+        $this->setTestPath($this->getTestPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
 
         if (!File::exists($this->getDomainPath())) {
             File::makeDirectory($this->getDomainPath());
@@ -142,6 +162,10 @@ class GenerateDomain extends Command
         if (!File::exists($this->getInfrastructurePath())) {
             File::makeDirectory($this->getInfrastructurePath());
             File::makeDirectory($this->getInfrastructurePath('/Contracts'));
+        }
+
+        if (!File::exists($this->getTestPath())) {
+            File::makeDirectory($this->getTestPath());
         }
 
         return true;
@@ -192,6 +216,27 @@ class GenerateDomain extends Command
         File::put($this->getDomainPath("/{$name}Repository.php"), $this->prepare(File::get($this->domainRepository)));
         File::put($this->getDomainPath("/{$name}Service.php"), $this->prepare(File::get($this->domainService)));
 
+        return true;
+    }
+
+    /**
+     * Copy domains
+     * @param $name
+     * @return bool
+     */
+    public function copyTests($name)
+    {
+        File::put($this->getTestPath("/{$name}InterfaceTest.php"), $this->prepare(File::get($this->domainEloquentTest)));
+        File::put($this->getTestPath("/{$name}RepositoryTest.php"), $this->prepare(File::get($this->domainRepositoryTest)));
+        File::put($this->getTestPath("/{$name}ServiceTest.php"), $this->prepare(File::get($this->domainServiceTest)));
+
+        return true;
+    }
+
+
+    public function copyBinding($name)
+    {
+        File::put($this->getDomainPath("/$name-binding.php"), $this->prepare(File::get($this->binding)));
         return true;
     }
 }

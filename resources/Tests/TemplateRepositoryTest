@@ -1,0 +1,80 @@
+<?php
+namespace {testNamespace}Domains\{directory};
+
+use Mockery as m;
+use {testNamespace}TestCase;
+use {namespace}Infrastructures\{directory}\Contracts\Eloquent{name}RepositoryInterface;
+use {namespace}Domains\{directory}\{name}Repository;
+use {namespace}Domains\{directory}\{name}Eloquent;
+use {namespace}Domains\{directory}\Contracts\{name}Interface;
+use {namespace}Domains\{directory}\Contracts\{name}RepositoryInterface;
+
+class {name}RepositoryTest extends TestCase
+{
+    private $eloquent;
+    private $repository;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->eloquent = m::mock(Eloquent{name}RepositoryInterface::class);
+        $this->repository = new {name}Repository($this->eloquent);
+    }
+
+    protected function tearDown()
+    {
+        m::close();
+    }
+
+    public function testConstructor()
+    {
+        $this->assertInstanceOf({name}RepositoryInterface::class, $this->repository);
+    }
+
+    /**
+     * Test create {name}
+     */
+    public function testCreate()
+    {
+        $data = $this->factory({name}Eloquent::class)->make()->toArray();
+        $object = m::mock({name}Interface::class);
+
+        $object{repositoryTest};
+
+        $this->eloquent->shouldReceive('create')->with($data)->andReturn($object);
+
+        $result = $this->repository->create($object);
+        $this->assertInstanceOf({name}Interface::class, $result);
+        $this->assertEquals($object, $result);
+    }
+
+    /**
+     * Test delete {name}
+     */
+    public function testDelete()
+    {
+        $note = m::mock({name}Interface::class);
+        $note->shouldReceive('getKey')->andReturn(1);
+        $this->eloquent->shouldReceive('delete')->with(1)->andReturn(true);
+        $result = $this->repository->delete($note);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test Update {name}
+     */
+    public function testUpdate()
+    {
+        $id = 1;
+        $data = $this->factory({name}Eloquent::class)->make()->toArray();
+        $object = m::mock({name}Interface::class);
+        $object->shouldReceive('getKey')->andReturn($id);
+
+        $object{repositoryTest};
+
+        $this->eloquent->shouldReceive('update')->with($data, $id)->andReturn($object);
+
+        $result = $this->repository->update($object);
+        $this->assertEquals($object, $result);
+    }
+}

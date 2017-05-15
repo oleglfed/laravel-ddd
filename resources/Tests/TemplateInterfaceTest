@@ -1,0 +1,20 @@
+<?php
+namespace {testNamespace}Domains\{directory};
+
+use {namespace}Domains\{directory}\{name}Eloquent;
+use {testNamespace}TestCase;
+use Mockery as m;
+
+class {name}InterfaceTest extends TestCase
+{
+    /**
+     * Set up test.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->modelUnderTest = new {name}Eloquent();
+    }
+
+    {eloquentTest}
+}

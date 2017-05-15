@@ -1,0 +1,22 @@
+<?php
+
+use {namespace}Domains\{directory} as {name}Domain;
+use {namespace}Infrastructures\{directory} as {name}Infrastructure;
+
+return [
+    'providers' => [
+        {name}Domain\Contracts\{name}ServiceInterface::class => {name}Domain\{name}Service::class,
+        {name}Domain\Contracts\{name}Interface::class => {name}Domain\{name}Eloquent::class,
+    ],
+    'eloquent_repositories' => [
+        // Eloquent Repository
+        {name}Infrastructure\Contracts\Eloquent{name}RepositoryInterface::class => [
+                'class' => {name}Infrastructure\Eloquent{name}Repository::class,
+                'model' => {name}Domain\{name}Eloquent::class
+            ]
+    ],
+    'repositories' => [
+        // Domain Repository
+        {name}Domain\Contracts\{name}RepositoryInterface::class => {name}Domain\{name}Repository::class,
+    ]
+];
