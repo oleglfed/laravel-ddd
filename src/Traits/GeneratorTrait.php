@@ -104,7 +104,7 @@ trait GeneratorTrait
         $test = null;
         foreach ($fields as $field) {
             $getter = 'get' . studly_case($field);
-            $test .= "\n            ->shouldReceive('$getter')->andReturn('test')";
+            $test .= "\n            ->shouldReceive('$getter')->andReturn(\$data['$field'])";
         }
 
         return $test;
