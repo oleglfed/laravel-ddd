@@ -183,7 +183,7 @@ class GenerateDomain extends Command
         );
 
         File::put(
-            $this->getInfrastructurePath("/Eloquent{$name}RepositoryInterface.php"),
+            $this->getInfrastructurePath("/Eloquent{$name}Repository.php"),
             $this->prepare(File::get($this->infrastructureClass))
         );
 
