@@ -172,7 +172,7 @@ trait GeneratorTrait
         ];
 
         $replacements = [
-            $this->getName(),
+            $this->getProvidedName(),
             $this->getAppNamespace(),
             $this->getTestsNamespace(),
             $this->getTable(),
@@ -263,7 +263,7 @@ trait GeneratorTrait
     /**
      * @return mixed
      */
-    public function getName()
+    public function getProvidedName()
     {
         return $this->name;
     }
