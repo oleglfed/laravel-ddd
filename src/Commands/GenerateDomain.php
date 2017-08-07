@@ -139,15 +139,15 @@ class GenerateDomain extends Command
     public function createDirectories()
     {
         if (!File::exists($this->getDomainPath())) {
-            File::makeDirectory($this->getDomainPath());
+            File::makeDirectory($this->getDomainPath(), 0755, true);
         }
 
         if (!File::exists($this->getInfrastructurePath())) {
-            File::makeDirectory($this->getInfrastructurePath());
+            File::makeDirectory($this->getInfrastructurePath(), 0755, true);
         }
 
         if (!File::exists($this->getTestPath())) {
-            File::makeDirectory($this->getTestPath());
+            File::makeDirectory($this->getTestPath(), 0755, true);
         }
 
         $this->setDomainPath($this->getDomainPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
@@ -155,17 +155,17 @@ class GenerateDomain extends Command
         $this->setTestPath($this->getTestPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
 
         if (!File::exists($this->getDomainPath())) {
-            File::makeDirectory($this->getDomainPath());
-            File::makeDirectory($this->getDomainPath('/Contracts'));
+            File::makeDirectory($this->getDomainPath(), 0755, true);
+            File::makeDirectory($this->getDomainPath('/Contracts'), 0755, true);
         }
 
         if (!File::exists($this->getInfrastructurePath())) {
-            File::makeDirectory($this->getInfrastructurePath());
-            File::makeDirectory($this->getInfrastructurePath('/Contracts'));
+            File::makeDirectory($this->getInfrastructurePath(), 0755, true);
+            File::makeDirectory($this->getInfrastructurePath('/Contracts'), 0755, true);
         }
 
         if (!File::exists($this->getTestPath())) {
-            File::makeDirectory($this->getTestPath());
+            File::makeDirectory($this->getTestPath(), 0755, true);
         }
 
         return true;
