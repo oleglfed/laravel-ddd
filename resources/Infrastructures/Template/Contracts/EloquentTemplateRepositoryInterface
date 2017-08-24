@@ -2,9 +2,9 @@
 
 namespace {namespace}Infrastructures\{directory}\Contracts;
 
-use {namespace}Infrastructures\Contracts\PersistenceStorageRepositoryInterface;
+use {namespace}Infrastructures\Contracts\EloquentRepositoryInterface;
 
-interface Eloquent{name}RepositoryInterface extends PersistenceStorageRepositoryInterface
+interface Eloquent{name}RepositoryInterface extends EloquentRepositoryInterface
 {
 
 }

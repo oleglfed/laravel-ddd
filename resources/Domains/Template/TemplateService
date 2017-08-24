@@ -2,24 +2,21 @@
 
 namespace {namespace}Domains\{directory};
 
-use {namespace}Domains\BaseServiceTrait;
+use {namespace}Domains\ServiceAbstract;
 use {namespace}Domains\{directory}\Contracts\{name}RepositoryInterface;
 use {namespace}Domains\{directory}\Contracts\{name}ServiceInterface;
 use {namespace}Domains\{directory}\Contracts\{name}Interface;
-use {namespace}Domains\Contracts\BaseEntityInterface;
 
 /**
  * {name}Service Class
  * It has all useful methods for business logic.
  */
-class {name}Service implements {name}ServiceInterface
+class {name}Service extends ServiceAbstract implements {name}ServiceInterface
 {
-    use BaseServiceTrait;
-
     /**
      * @var {name}RepositoryInterface
      */
-    private $repository;
+    protected $repository;
 
     /**
      * Loads our $repo with the actual Repo associated with our {name}Interface

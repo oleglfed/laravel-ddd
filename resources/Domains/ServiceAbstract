@@ -1,0 +1,122 @@
+<?php
+
+namespace {namespace}Domains;
+
+use {namespace}Domains\Contracts\BaseEntityInterface;
+
+abstract class ServiceAbstract
+{
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->repository()->get($id);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function all()
+    {
+        return $this->repository()->all();
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function find($id)
+    {
+        return $this->repository()->find($id);
+    }
+
+    /**
+     * Find Where
+     * @param array $attributes
+     * @return mixed
+     */
+    public function findWhere(array $attributes)
+    {
+        return $this->repository()->findWhere($attributes);
+    }
+
+    /**
+     * Delete Where
+     * @param array $where
+     * @return mixed
+     */
+    public function deleteWhere(array $where)
+    {
+        return $this->repository()->deleteWhere($where);
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function firstOrCreate(array $attributes)
+    {
+        return $this->repository()->firstOrCreate($attributes);
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function firstOrNull(array $attributes)
+    {
+        return $this->repository()->firstOrNull($attributes);
+    }
+
+    /**
+     * List paginated records
+     * @param int $limit
+     * @param int $offset
+     * @param array $columns
+     * @return mixed
+     */
+    public function lists($limit = 10, $offset = 0, $columns = ['*'])
+    {
+        return $this->repository()->lists($limit, $offset, $columns);
+    }
+
+    /**
+     * @param BaseEntityInterface $object
+     * @return mixed
+     */
+    public function save(BaseEntityInterface $object)
+    {
+        if ($object->getKey()) {
+            return $this->repository()->update($object);
+        }
+
+        return $this->repository()->create($object);
+    }
+
+    /**
+     * @param array|null $attributes
+     * @return mixed
+     */
+    public function newInstance(array $attributes = null)
+    {
+        return $this->repository()->newInstance($attributes);
+    }
+
+    /**
+     * Get main repository.
+     */
+    public function repository()
+    {
+        return $this->repository;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function count()
+    {
+        return $this->repository()->count();
+    }
+}

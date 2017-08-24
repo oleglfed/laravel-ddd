@@ -1,0 +1,144 @@
+<?php
+
+namespace {namespace}Infrastructures;
+
+use Illuminate\Database\Eloquent\Model;
+
+abstract class EloquentAbstract extends Model
+{
+    const DATABASE_DATETIME_FORMAT = 'Y-m-d H:i:s';
+    const DATABASE_DATE_FORMAT = 'Y-m-d';
+    const DATABASE_HUMAN_FORMAT = 'd F Y';
+
+    protected $primaryKey = 'id';
+
+    /**
+     * Get Primary Key
+     * @return string
+     */
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
+    }
+
+    /**
+     * Get Created At.
+     *
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        $format = self::DATABASE_DATETIME_FORMAT;
+
+        return $this->created_at->format($format);
+    }
+
+    /**
+     * Get Updated At.
+     *
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        $format = self::DATABASE_DATETIME_FORMAT;
+
+        return $this->updated_at->format($format);
+    }
+
+    /**
+     * Get Deleted At.
+     */
+    public function getDeletedAt()
+    {
+        if (!$this->deleted_at) {
+            return null;
+        }
+
+        $format = self::DATABASE_DATETIME_FORMAT;
+
+        return $this->deleted_at->format($format);
+    }
+
+    /**
+     * Where in
+     * @param $key
+     * @param $array
+     * @return mixed
+     */
+    public function whereIn($key, $array)
+    {
+        return parent::whereIn($key, $array);
+    }
+
+    /**
+     * Find where
+     * @param array $where
+     * @param array $columns
+     * @return mixed
+     */
+    public function findWhere(array $where, $columns = ['*'])
+    {
+        $this->applyScope();
+        $this->applyConditions($where);
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+        $model = $this->model->get($columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Apply Scope
+     * @return $this
+     */
+    protected function applyScope()
+    {
+        if (isset($this->scopeQuery) && is_callable($this->scopeQuery)) {
+            $callback = $this->scopeQuery;
+            $this->model = $callback($this->model);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Apply Conditions
+     * @param array $where
+     */
+    protected function applyConditions(array $where)
+    {
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+
+                if ($condition == 'in') {
+                    $this->model = $this->model->whereIn($field, $val);
+                    continue;
+                }
+
+                $this->model = $this->model->where($field, $condition, $val);
+            } else {
+                $this->model = $this->model->where($field, '=', $value);
+            }
+        }
+    }
+
+    /**
+     * Reset Model
+     */
+    public function resetModel()
+    {
+        $this->makeModel();
+    }
+
+    /**
+     * Make Model
+     * @return static
+     */
+    public function makeModel()
+    {
+        return $this->model = $this->newInstance([]);
+    }
+}

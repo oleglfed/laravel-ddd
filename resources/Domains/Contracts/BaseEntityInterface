@@ -1,0 +1,43 @@
+<?php
+
+namespace {namespace}Domains\Contracts;
+
+/**
+ * Interface BaseEntityInterface.
+ */
+interface BaseEntityInterface
+{
+    /**
+     * Get key Identifier usually field primary key.
+     *
+     * @return mixed Field Primary Key
+     */
+    public function getKey();
+
+    /**
+     * Get table name.
+     *
+     * @return string Table name
+     */
+    public function getTable();
+
+    /**
+     * Get attribute value.
+     */
+    public function getAttribute($attributeName);
+
+    /**
+     * Set attribute value.
+     */
+    public function setAttribute($attributeName, $value);
+
+    /**
+     * Cast object to json.
+     */
+    public function toJson($options = 0);
+
+    /**
+     * Cast object to array.
+     */
+    public function toArray();
+}

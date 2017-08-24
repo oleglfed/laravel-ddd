@@ -1,0 +1,148 @@
+<?php
+
+namespace {namespace}Domains;
+
+use {namespace}Infrastructures\Contracts\EloquentRepositoryInterface;
+
+abstract class RepositoryAbstract
+{
+    /**
+     * Responsible Eloquent
+     * @var EloquentRepositoryInterface
+     */
+    protected $eloquent;
+
+    /**
+     * RepositoryAbstract constructor.
+     * @param EloquentRepositoryInterface $eloquentRepository
+     */
+    public function __construct(EloquentRepositoryInterface $eloquentRepository)
+    {
+        $this->eloquent = $eloquentRepository;
+    }
+
+    /**
+     * Get eloquent
+     * @return PersistenceStorageRepositoryInterface
+     */
+    public function eloquent()
+    {
+        return $this->eloquent;
+    }
+
+    /**
+     * Gte record by ID
+     * @param $id
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->eloquent()->find($id);
+    }
+
+    /**
+     * Find record by ID
+     * @param $id
+     * @return mixed
+     */
+    public function find($id)
+    {
+        return $this->eloquent()->findWithoutFail($id);
+    }
+
+    /**
+     * First entity or create new
+     * @param array $attributes
+     * @return mixed
+     */
+    public function firstOrCreate(array $attributes)
+    {
+        return $this->eloquent()->firstOrCreate($attributes);
+    }
+
+    /**
+     * First entity or Null
+     * @param array $attributes
+     * @return mixed
+     */
+    public function firstOrNull(array $attributes)
+    {
+        return $this->eloquent()->firstOrNull($attributes);
+    }
+
+    /**
+     * Returns New Instance
+     * @param array|null $attributes
+     * @return mixed
+     */
+    public function newInstance(array $attributes = null)
+    {
+        return $this->eloquent()->newInstance($attributes);
+    }
+
+    /**
+     * Get Count
+     * @return mixed
+     */
+    public function count()
+    {
+        return $this->eloquent()->all()->count();
+    }
+
+    /**
+     * Paginated List.
+     * @return mixed
+     */
+    public function lists($limit = 10, $offset = 0, $columns = ['*'])
+    {
+        return $this->eloquent()->paginate($limit, $offset, $columns);
+    }
+
+    /**
+     * Get all records
+     * @return mixed
+     */
+    public function all()
+    {
+        return $this->eloquent()->all();
+    }
+
+    /**
+     * Magic method to call repository methods.
+     * @param $method
+     * @param $args
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
+        if (method_exists($this->eloquent(), $method)) {
+            return call_user_func_array(array($this->eloquent(), $method), $args);
+        }
+
+        if ($this->eloquent()->isCallable($method)) {
+            return call_user_func_array(array($this->eloquent(), $method), $args);
+        }
+
+        throw new \BadMethodCallException(
+            sprintf('Call to undefined method %s::%s', get_class($this->eloquent()), $method)
+        );
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function findWhere(array $attributes)
+    {
+        return $this->eloquent()->findWhere($attributes);
+    }
+
+    /**
+     * @param array $where
+     * @return mixed
+     */
+    public function deleteWhere(array $where)
+    {
+        return $this->eloquent()->deleteWhere($where);
+    }
+}

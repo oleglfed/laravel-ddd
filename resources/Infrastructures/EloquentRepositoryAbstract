@@ -1,0 +1,568 @@
+<?php
+
+namespace {namespace}Infrastructures;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use {namespace}Infrastructures\Contracts\EloquentRepositoryInterface;
+
+abstract class EloquentRepositoryAbstract implements EloquentRepositoryInterface
+{
+    protected $connection;
+
+    /**
+     * Eloquent Model.
+     *
+     * @var Model
+     */
+    protected $model;
+
+    /**
+     * @var string
+     */
+    protected $with = null;
+
+    /**
+     * Setting our class $model to the injected model.
+     *
+     * @param EloquentAbstract $model
+     */
+    public function __construct(EloquentAbstract $model)
+    {
+        $this->connection = $model->getConnection();
+        $this->model = $model;
+        $this->boot();
+    }
+
+    /**
+     * Called when constructed.
+     */
+    protected function boot()
+    {
+    }
+
+    /**
+     * @throws RepositoryException
+     */
+    public function resetModel()
+    {
+        $this->makeModel();
+    }
+
+    /**
+     * @return Model
+     *
+     * @throws RepositoryException
+     */
+    public function makeModel()
+    {
+        return $this->model = $this->newInstance([]);
+    }
+
+    /**
+     * @return EloquentAbstract|Model
+     */
+    public function modelInstance()
+    {
+        if ($this->model instanceof EloquentAbstract) {
+            return $this->model;
+        }
+
+        return $this->model->getModel();
+    }
+
+    /**
+     * Retrieve data array for populate field select.
+     *
+     * @param string      $column
+     * @param string|null $key
+     *
+     * @return \Illuminate\Support\Collection|array
+     */
+    public function lists($column, $key = null)
+    {
+        $results = $this->model->lists($column, $key);
+
+        $this->resetModel();
+
+        return $results;
+    }
+
+    /**
+     * Retrieve all data of repository.
+     *
+     * @param array $columns
+     *
+     * @return mixed
+     */
+    public function all($columns = ['*'])
+    {
+        $this->applyScope();
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+        if ($this->model instanceof Builder) {
+            $results = $this->model->get($columns);
+        } else {
+            $results = $this->model->all($columns);
+        }
+        $this->resetModel();
+        $this->resetScope();
+
+        return $results;
+    }
+
+    /**
+     * Retrieve first data of repository.
+     *
+     * @param array $columns
+     *
+     * @return mixed
+     */
+    public function first($columns = ['*'])
+    {
+        $this->applyScope();
+
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}"];
+        }
+
+        $results = $this->model->first($columns);
+        $this->resetModel();
+
+        return $results;
+    }
+
+    /**
+     * Retrieve first data of repository or create it.
+     * @param array $attributes
+     * @return mixed
+     */
+    public function firstOrCreate(array $attributes)
+    {
+        $this->applyConditions($attributes);
+        $model = $this->model->first();
+        $this->resetModel();
+
+        return $model ?: $this->create($attributes);
+    }
+
+    /**
+     * Retrieve first data of repository or return null.
+     * @param array $attributes
+     * @return null
+     */
+    public function firstOrNull(array $attributes)
+    {
+        $this->applyConditions($attributes);
+        $model = $this->model->first();
+        $this->resetModel();
+
+        return $model ?: null;
+    }
+
+    /**
+     * Retrieve all data of repository, paginated.
+     * @param int $limit
+     * @param int $offset
+     * @param array $columns
+     * @return Collection
+     */
+    public function paginate($limit = 10, $offset = 0, $columns = ['*'])
+    {
+        $this->applyScope();
+        $query = $this->model->toBase();
+
+        // Only get total count from unique distinct value
+        $select = 'distinct '.$this->modelInstance()->getTable().'.id';
+        $total = $query->getCountForPagination([$this->connection->raw($select)]);
+
+        if (!$total || (int) $limit <= 0 || $offset < 0 || $offset >= $total) {
+            $this->resetModel();
+            $this->resetScope();
+
+            return new Collection();
+        }
+
+        $results = $this->model->limit($limit)->offset($offset)->get($columns);
+
+        $this->resetModel();
+        $this->resetScope();
+
+        return $results;
+    }
+
+    /**
+     * Find data by id.
+     * @param $id
+     * @param array $columns
+     * @return mixed
+     */
+    public function find($id, $columns = ['*'])
+    {
+        $this->applyScope();
+
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+
+        $model = $this->model->find($id, $columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Find data by id.
+     * @param $id
+     * @param array $columns
+     * @return mixed
+     */
+    public function findWithoutFail($id, $columns = ['*'])
+    {
+        $this->applyScope();
+
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+
+        $model = $this->model->find($id, $columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Find data by multiple fields.
+     * @param array $where
+     * @param array $columns
+     * @return mixed
+     */
+    public function findWhere(array $where, $columns = ['*'])
+    {
+        $this->applyScope();
+        $this->applyConditions($where);
+
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+
+        $model = $this->model->get($columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Count data by multiple fields.
+     * @param array $where
+     * @param array $columns
+     * @return mixed
+     */
+    public function countWhere(array $where, $columns = ['id'])
+    {
+        $this->applyScope();
+        $this->applyConditions($where);
+
+        if ($columns = ['id']) {
+            $columns = ["{$this->modelInstance()->getTable()}.id"];
+        }
+
+        $count = $this->model->count($columns);
+        $this->resetModel();
+
+        return $count;
+    }
+
+    /**
+     * Find data by multiple values in one field.
+     * @param $field
+     * @param array $values
+     * @param array $columns
+     * @return mixed
+     */
+    public function findWhereIn($field, array $values, $columns = ['*'])
+    {
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+
+        $model = $this->model->whereIn($field, $values)->get($columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Find data by excluding multiple values in one field.
+     * @param $field
+     * @param array $values
+     * @param array $columns
+     * @return mixed
+     */
+    public function findWhereNotIn($field, array $values, $columns = ['*'])
+    {
+        if ($columns = ['*']) {
+            $columns = ["{$this->modelInstance()->getTable()}.*"];
+        }
+
+        $model = $this->model->whereNotIn($field, $values)->get($columns);
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Create a new instance of entity.
+     * @param array|null $attributes
+     * @return static
+     */
+    public function newInstance(array $attributes = null)
+    {
+        return $this->modelInstance()->newInstance($attributes);
+    }
+
+    /**
+     * Save a new entity in repository.
+     * @param array $attributes
+     * @return static
+     */
+    public function create(array $attributes)
+    {
+        $model = $this->modelInstance()->newInstance($attributes);
+        $model->save();
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Update a entity in repository by id.
+     * @param array $attributes
+     * @param $id
+     * @return mixed
+     */
+    public function update(array $attributes, $id)
+    {
+        $model = $this->modelInstance()->findOrFail($id);
+        $model->fill($attributes);
+        $model->save();
+        $this->resetModel();
+
+        return $model;
+    }
+
+    /**
+     * Update or Create an entity in repository.
+     * @param array $attributes
+     * @param array $values
+     * @return mixed
+     */
+    public function updateOrCreate(array $attributes, array $values = [])
+    {
+        return $this->modelInstance()->updateOrCreate($attributes, $values);
+    }
+
+    /**
+     * Delete a entity in repository by id.
+     * @param $id
+     * @param bool $isPermanentDelete
+     * @return int
+     */
+    public function delete($id, bool $isPermanentDelete = false)
+    {
+        $this->resetModel();
+        if ($isPermanentDelete) {
+            $ids = is_array($id) ? $id : [$id];
+            return $this->modelInstance()->permanentDelete($ids);
+        }
+
+        $deleted = $this->modelInstance()->destroy($id);
+
+        return $deleted;
+    }
+
+    /**
+     * Delete multiple entities by given criteria.
+     * @param array $where
+     * @return bool|null
+     */
+    public function deleteWhere(array $where)
+    {
+        $this->applyScope();
+        $this->applyConditions($where);
+        $deleted = $this->model->delete();
+        $this->resetModel();
+
+        return $deleted;
+    }
+
+    /**
+     * Check if entity has relation.
+     * @param $relation
+     * @return $this
+     */
+    public function has($relation)
+    {
+        $this->model = $this->model->has($relation);
+
+        return $this;
+    }
+
+    /**
+     * Load relations.
+     * @param $relations
+     * @return $this
+     */
+    public function with($relations)
+    {
+        $this->model = $this->model->with($relations);
+        $this->with = $relations;
+
+        return $this;
+    }
+
+    /**
+     * Load relation with closure.
+     * @param $relation
+     * @param $closure
+     * @return $this
+     */
+    public function whereHas($relation, $closure)
+    {
+        $this->model = $this->model->whereHas($relation, $closure);
+
+        return $this;
+    }
+
+    /**
+     * Set hidden fields.
+     * @param array $fields
+     * @return $this
+     */
+    public function hidden(array $fields)
+    {
+        $this->model->setHidden($fields);
+
+        return $this;
+    }
+
+    /**
+     * Set order column.
+     * @param string $column
+     * @param string $direction
+     * @return $this
+     */
+    public function orderBy($column, $direction = 'asc')
+    {
+        $this->model = $this->model->orderBy($column, $direction);
+
+        return $this;
+    }
+
+    /**
+     * Set visible fields.
+     * @param array $fields
+     * @return $this
+     */
+    public function visible(array $fields)
+    {
+        $this->model->setVisible($fields);
+
+        return $this;
+    }
+
+    /**
+     * Reset Query Scope.
+     * @return $this
+     */
+    public function resetScope()
+    {
+        $this->scopeQuery = null;
+
+        return $this;
+    }
+
+    /**
+     * Apply scope in current Query.
+     * @return $this
+     */
+    protected function applyScope()
+    {
+        if (isset($this->scopeQuery) && is_callable($this->scopeQuery)) {
+            $callback = $this->scopeQuery;
+            $this->model = $callback($this->model);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Applies the given where conditions to the model.
+     * @param array $where
+     */
+    protected function applyConditions(array $where)
+    {
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+                $this->model = $this->model->where($field, $condition, $val);
+            } else {
+                $this->model = $this->model->where($field, '=', $value);
+            }
+        }
+    }
+
+    /**
+     * Magic method to call model's methods.
+     * @param $method
+     * @param $args
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
+        $this->applyScope();
+        $this->resetScope();
+        $model = $this->model;
+        $this->resetModel();
+
+        if ($this->isCallable($method)) {
+            $result = call_user_func_array(array($model, $method), $args);
+
+            return $result;
+        }
+
+        throw new \BadMethodCallException(sprintf('Call to undefined method %s::%s', get_class($this->model), $method));
+    }
+
+    /**
+     * Check if model has this method.
+     * @param $method
+     * @return bool
+     */
+    public function isCallable($method)
+    {
+        return method_exists($this->model, $method) ||
+        method_exists($this->model->toBase(), $method);
+    }
+
+    /**
+     * Raw.
+     * @param $rawString
+     * @return \Illuminate\Database\Query\Expression
+     */
+    public function raw($rawString)
+    {
+        return $this->connection->raw($rawString);
+    }
+
+    /**
+     * Get Table.
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->modelInstance()->getTable();
+    }
+}
