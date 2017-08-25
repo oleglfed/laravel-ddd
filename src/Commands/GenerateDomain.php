@@ -2,7 +2,6 @@
 
 namespace oleglfed\LaravelDDD\Commands;
 
-use File;
 use Illuminate\Console\Command;
 use oleglfed\LaravelDDD\Traits\GeneratorTrait;
 

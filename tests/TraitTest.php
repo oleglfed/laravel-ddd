@@ -1,7 +1,7 @@
 <?php
+
 namespace Test;
 
-use Mockery as m;
 use oleglfed\LaravelDDD\Traits\GeneratorTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -43,6 +43,7 @@ class TraitTest extends TestCase
     }
 }
 
-class Dummy {
+class Dummy
+{
     use GeneratorTrait;
 }
