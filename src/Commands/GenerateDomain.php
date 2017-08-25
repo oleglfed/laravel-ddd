@@ -159,15 +159,15 @@ class GenerateDomain extends Command
     public function createDirectories()
     {
         if (!file_exists($this->getDomainPath())) {
-            File::makeDirectory($this->getDomainPath());
+            mkdir($this->getDomainPath(), 0777);
         }
 
         if (!file_exists($this->getInfrastructurePath())) {
-            File::makeDirectory($this->getInfrastructurePath());
+            mkdir($this->getInfrastructurePath(), 0777);
         }
 
         if (!file_exists($this->getTestPath())) {
-            File::makeDirectory($this->getTestPath());
+            mkdir($this->getTestPath(), 0777);
         }
 
         if (!$this->option('without-abstracts')) {
@@ -179,17 +179,17 @@ class GenerateDomain extends Command
         $this->setTestPath($this->getTestPath(DIRECTORY_SEPARATOR.$this->getDirectory()));
 
         if (!file_exists($this->getDomainPath())) {
-            File::makeDirectory($this->getDomainPath());
-            File::makeDirectory($this->getDomainPath('/Contracts'));
+            mkdir($this->getDomainPath(), 0777);
+            mkdir($this->getDomainPath('/Contracts'), 0777);
         }
 
         if (!file_exists($this->getInfrastructurePath())) {
-            File::makeDirectory($this->getInfrastructurePath());
-            File::makeDirectory($this->getInfrastructurePath('/Contracts'));
+            mkdir($this->getInfrastructurePath(), 0777);
+            mkdir($this->getInfrastructurePath('/Contracts'), 0777);
         }
 
         if (!file_exists($this->getTestPath())) {
-            File::makeDirectory($this->getTestPath());
+            mkdir($this->getTestPath(), 0777);
         }
 
         return true;
@@ -201,48 +201,48 @@ class GenerateDomain extends Command
     public function copyAbstractClasses()
     {
         if (!file_exists("$this->infrastructurePath/Contracts/EloquentRepositoryInterface.php")) {
-            File::makeDirectory("$this->infrastructurePath/Contracts");
+            mkdir("$this->infrastructurePath/Contracts", 0777);
 
-            File::put(
+            file_put_contents(
                 "$this->infrastructurePath/Contracts/EloquentRepositoryInterface.php",
-                $this->prepare(File::get($this->abstractEloquentRepositoryInterface))
+                $this->prepare(file_get_contents($this->abstractEloquentRepositoryInterface))
             );
         }
 
         if (!file_exists("$this->infrastructurePath/EloquentRepositoryAbstract.php")) {
-            File::put(
+            file_put_contents(
                 "$this->infrastructurePath/EloquentRepositoryAbstract.php",
-                $this->prepare(File::get($this->abstractEloquentRepository))
+                $this->prepare(file_get_contents($this->abstractEloquentRepository))
             );
         }
 
         if (!file_exists("$this->infrastructurePath/EloquentAbstract.php")) {
-            File::put(
+            file_put_contents(
                 "$this->infrastructurePath/EloquentAbstract.php",
-                $this->prepare(File::get($this->abstractEloquent))
+                $this->prepare(file_get_contents($this->abstractEloquent))
             );
         }
 
         if (!file_exists("$this->domainPath/RepositoryAbstract.php")) {
-            File::makeDirectory("$this->domainPath/Contracts");
+            mkdir("$this->domainPath/Contracts", 0777);
 
-            File::put(
+            file_put_contents(
                 "$this->domainPath/Contracts/BaseEntityInterface.php",
-                $this->prepare(File::get($this->abstractBaseEntityInterface))
+                $this->prepare(file_get_contents($this->abstractBaseEntityInterface))
             );
         }
 
         if (!file_exists("$this->domainPath/RepositoryAbstract.php")) {
-            File::put(
+            file_put_contents(
                 "$this->domainPath/RepositoryAbstract.php",
-                $this->prepare(File::get($this->abstractRepository))
+                $this->prepare(file_get_contents($this->abstractRepository))
             );
         }
 
         if (!file_exists("$this->domainPath/ServiceAbstract.php")) {
-            File::put(
+            file_put_contents(
                 "$this->domainPath/ServiceAbstract.php",
-                $this->prepare(File::get($this->abstractService))
+                $this->prepare(file_get_contents($this->abstractService))
             );
         }
 
@@ -256,14 +256,14 @@ class GenerateDomain extends Command
      */
     public function copyInfrastructure($name)
     {
-        File::put(
+        file_put_contents(
             $this->getInfrastructurePath("/Contracts/Eloquent{$name}RepositoryInterface.php"),
-            $this->prepare(File::get($this->infrastructureContract))
+            $this->prepare(file_get_contents($this->infrastructureContract))
         );
 
-        File::put(
+        file_put_contents(
             $this->getInfrastructurePath("/Eloquent{$name}Repository.php"),
-            $this->prepare(File::get($this->infrastructureClass))
+            $this->prepare(file_get_contents($this->infrastructureClass))
         );
 
         return true;
@@ -278,24 +278,24 @@ class GenerateDomain extends Command
      */
     public function copyDomain($name)
     {
-        File::put(
+        file_put_contents(
             $this->getDomainPath("/Contracts/{$name}Interface.php"),
-            $this->prepare(File::get($this->domainInterfaceContract))
+            $this->prepare(file_get_contents($this->domainInterfaceContract))
         );
 
-        File::put(
+        file_put_contents(
             $this->getDomainPath("/Contracts/{$name}RepositoryInterface.php"),
-            $this->prepare(File::get($this->domainRepositoryContract))
+            $this->prepare(file_get_contents($this->domainRepositoryContract))
         );
 
-        File::put(
+        file_put_contents(
             $this->getDomainPath("/Contracts/{$name}ServiceInterface.php"),
-            $this->prepare(File::get($this->domainServiceContract))
+            $this->prepare(file_get_contents($this->domainServiceContract))
         );
 
-        File::put($this->getDomainPath("/{$name}Eloquent.php"), $this->prepare(File::get($this->domainEloquent)));
-        File::put($this->getDomainPath("/{$name}Repository.php"), $this->prepare(File::get($this->domainRepository)));
-        File::put($this->getDomainPath("/{$name}Service.php"), $this->prepare(File::get($this->domainService)));
+        file_put_contents($this->getDomainPath("/{$name}Eloquent.php"), $this->prepare(file_get_contents($this->domainEloquent)));
+        file_put_contents($this->getDomainPath("/{$name}Repository.php"), $this->prepare(file_get_contents($this->domainRepository)));
+        file_put_contents($this->getDomainPath("/{$name}Service.php"), $this->prepare(file_get_contents($this->domainService)));
 
         return true;
     }
@@ -309,9 +309,9 @@ class GenerateDomain extends Command
      */
     public function copyTests($name)
     {
-        File::put($this->getTestPath("/{$name}InterfaceTest.php"), $this->prepare(File::get($this->domainEloquentTest)));
-        File::put($this->getTestPath("/{$name}RepositoryTest.php"), $this->prepare(File::get($this->domainRepositoryTest)));
-        File::put($this->getTestPath("/{$name}ServiceTest.php"), $this->prepare(File::get($this->domainServiceTest)));
+        file_put_contents($this->getTestPath("/{$name}InterfaceTest.php"), $this->prepare(file_get_contents($this->domainEloquentTest)));
+        file_put_contents($this->getTestPath("/{$name}RepositoryTest.php"), $this->prepare(file_get_contents($this->domainRepositoryTest)));
+        file_put_contents($this->getTestPath("/{$name}ServiceTest.php"), $this->prepare(file_get_contents($this->domainServiceTest)));
 
         return true;
     }
@@ -320,10 +320,10 @@ class GenerateDomain extends Command
     {
         $name = strtolower($name);
         if (!file_exists(config_path('domains'))) {
-            File::makeDirectory(config_path('domains'));
+            mkdir(config_path('domains'), 0777);
         }
 
-        File::put(config_path("domains/$name-binding.php"), $this->prepare(File::get($this->binding)));
+        file_put_contents(config_path("domains/$name-binding.php"), $this->prepare(file_get_contents($this->binding)));
 
         return true;
     }
