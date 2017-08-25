@@ -1,7 +1,8 @@
 # Laravel DDD
 ### Domain Driven Development domains generator. 
 
-This package is made to generate Domains easily. 
+This package is made to generate Domains, based on DB table. 
+Package get all table fields and creates domain. With Domain creates repository, service and Infrastructure. Also the Package automatically binds generated classes to your app, so you can easily use DI or make Service by contract `$service = app(UserServiceInterface::class);`  
 
 `php artisan make:domain User --table=users`
 
@@ -17,7 +18,10 @@ Go to your `config/app.php` and add the service provider:
 `\oleglfed\LaravelDDD\LaravelDddServiceProvider::class`
 
 ## Usage
+This package creates `app/Domain` and `app/Infrastructure` directories. So at first package should be able to create these two directories. Afterwards, you can revoke writable access from `app` directory.
 
+This package requires writable permissions to config/domains directory. 
+Before use, create `config/domains` directory with writable permissions or allow the package to write into `config` directory. It is necessary for writing domains binding. Afterwards, these domains will be bound to your app by LaravelDddServiceProvider
 
 ```sh
 $ php artisan make:domain User --table=users
@@ -91,7 +95,7 @@ This package contains a few useful methods to work with services and repositorie
     }
 ```
 
-If your routes uses `resource` you can explicitly bind Domains
+If your routes use `resource` you can explicitly bind Domains
 Open `Providers\RouteServiceProvider` and add:
 
 ```
@@ -101,7 +105,7 @@ Then you are able to use:
 ```
  public function update(Request $request, UserInterface $user, UserServiceInterface $service)
  {
-    dd($user);
+    dd($user); <-- will be dumped User Domain
  }        
 
 ```
