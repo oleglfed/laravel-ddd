@@ -1,5 +1,7 @@
 # Laravel DDD
-Domain Driven Development domains generator
+### Domain Driven Development domains generator. 
+
+This package is made to generate Domains easily. 
 
 `php artisan make:domain User --table=users`
 
@@ -43,6 +45,66 @@ Option | Description
 `directory` | By default directory name takes from domain name. To override it --directory might be set
 `domain-path` | By default domain directory is app/Domains. To override it --domain-path might be set
 `infrastructure-path` | By default infrastructure directory is app/Infrastructures. To override it --infrastructure-path might be set
+
+
+
+### Advanced usage
+
+This package contains a few useful methods to work with services and repositories.
+
+
+```
+    public function index(UserServiceInterface $service)
+    {
+        $service->all(); //Shows all records
+        
+        $service->get(1); //Shows record with ID: 1
+        
+        $servcie->findWhere(['first_name' => 'Oleg']); //Returns all records with provided where
+        
+        $servcie->deleteWhere(['first_name' => 'Oleg']); //Deletes all records with provided where
+        
+        $servcie->firstOrCreate(['email' => 'oleg.fedoliak@gmail.com']); //Returns a record with provided where, or creates it
+        
+        $servcie->firstOrNull(['email' => 'oleg.fedoliak@gmail.com']); //Returns a record with provided where, or null
+       
+        $servcie->lists(20, 10, ['first_name', 'email']); //Returns paginated list with `per page`, `offset`, `columns` (all by default) 
+        
+        $servcie->count(); //Returns count of records 
+        
+        //Create
+        $user = $service->newInstance();
+        $user->setFirstName('Oleg');
+        $user->setEmail('oleg.fedoliak@gmail.com');
+        
+        $user = $servcie->create($user);
+        
+        //Update
+        $user->setFirstName('John');
+        $user = $servcie->update($user);
+        
+        //Save. There is a method which will check if record is exists, and if so will update it. Otherwise create it.
+        $user = $servcie->save($user);
+
+        //Delete
+        $isDeleted = $servcie->delete($user);
+    }
+```
+
+If your routes uses `resource` you can explicitly bind Domains
+Open `Providers\RouteServiceProvider` and add:
+
+```
+    \Route::model('user', App\Domains\User\UserEloquent::class);
+```
+Then you are able to use:
+```
+ public function update(Request $request, UserInterface $user, UserServiceInterface $service)
+ {
+    dd($user);
+ }        
+
+```
 
 ### License
 
