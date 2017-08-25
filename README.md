@@ -1,6 +1,12 @@
 # Laravel DDD
 ### Domain Driven Development domains generator. 
 
+
+![image](https://img.shields.io/packagist/v/oleglfed/laravel-ddd.svg?style=flat)
+![image](https://img.shields.io/packagist/l/oleglfed/laravel-ddd.svg?style=flat)
+[![Build Status](https://travis-ci.org/oleglfed/laravel-ddd.svg?branch=master)](https://travis-ci.org/oleglfed/laravel-ddd.svg?branch=master)
+[![StyleCI](https://styleci.io/repos/91183556/shield?branch=master)](https://styleci.io/repos/91183556)
+
 This package is made to generate Domains, based on DB table. 
 Package get all table fields and creates domain. With Domain creates repository, service and Infrastructure. Also the Package automatically binds generated classes to your app, so you can easily use DI or make Service by contract `$service = app(UserServiceInterface::class);`  
 
