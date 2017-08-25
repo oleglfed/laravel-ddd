@@ -9,14 +9,15 @@ trait GeneratorTrait
     /**
      * @param $fields
      * @param bool $isInterface
+     *
      * @return null|string
      */
     public function getSettersGetters($fields, $isInterface = false)
     {
         $settersGetters = null;
         foreach ($fields as $field) {
-            $getter = 'get' . studly_case($field);
-            $setter = 'set' . studly_case($field);
+            $getter = 'get'.studly_case($field);
+            $setter = 'set'.studly_case($field);
             $settersGetters .= $isInterface ? "\n
     /**
      * Get $field.
@@ -58,13 +59,14 @@ trait GeneratorTrait
 
     /**
      * @param $fields
+     *
      * @return null|string
      */
     public function getRepositoryPayloads($fields)
     {
         $payloads = null;
         foreach ($fields as $field) {
-            $getter = 'get' . studly_case($field);
+            $getter = 'get'.studly_case($field);
             $payloads .= "'$field' => $$this->name->$getter(),\n            ";
         }
 
@@ -73,15 +75,16 @@ trait GeneratorTrait
 
     /**
      * @param $fields
+     *
      * @return null|string
      */
     public function getEloquentTests($fields)
     {
         $test = null;
         foreach ($fields as $field) {
-            $getter = 'get' . studly_case($field);
+            $getter = 'get'.studly_case($field);
             $testName = ucfirst($getter);
-            $setter = 'set' . studly_case($field);
+            $setter = 'set'.studly_case($field);
 
             $test .= "            
     public function test$testName()
@@ -97,13 +100,14 @@ trait GeneratorTrait
 
     /**
      * @param $fields
+     *
      * @return null|string
      */
     public function getRepositoryTests($fields)
     {
         $test = null;
         foreach ($fields as $field) {
-            $getter = 'get' . studly_case($field);
+            $getter = 'get'.studly_case($field);
             $test .= "\n            ->shouldReceive('$getter')->andReturn(\$data['$field'])";
         }
 
@@ -112,6 +116,7 @@ trait GeneratorTrait
 
     /**
      * @param $fields
+     *
      * @return null|string
      */
     public function getRepositoryDataTests($fields)
@@ -125,8 +130,9 @@ trait GeneratorTrait
     }
 
     /**
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function parseDbTable()
     {
@@ -146,12 +152,13 @@ trait GeneratorTrait
 
             return collect([]);
         } catch (\Exception $e) {
-            throw new \Exception("Database is not connected");
+            throw new \Exception('Database is not connected');
         }
     }
 
     /**
      * @param $fileContent
+     *
      * @return mixed
      */
     public function prepare($fileContent)
@@ -191,43 +198,47 @@ trait GeneratorTrait
 
     /**
      * @param $fields
+     *
      * @return string
      */
     public function getFillable($fields)
     {
-        return "'" . implode("', '", $fields->toArray()) . "'";
+        return "'".implode("', '", $fields->toArray())."'";
     }
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function getDomainPath($path = null)
     {
-        return $this->domainPath . $path;
+        return $this->domainPath.$path;
     }
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function getInfrastructurePath($path = null)
     {
-        return $this->infrastructurePath . $path;
+        return $this->infrastructurePath.$path;
     }
-
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function getTestPath($path = null)
     {
-        return $this->testPath . $path;
+        return $this->testPath.$path;
     }
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function setDomainPath($path)
@@ -237,14 +248,17 @@ trait GeneratorTrait
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function setInfrastructurePath($path)
     {
         return $this->infrastructurePath = $path;
     }
+
     /**
      * @param $path
+     *
      * @return string
      */
     public function setTestPath($path)
@@ -277,7 +291,8 @@ trait GeneratorTrait
     }
 
     /**
-     * Returns App namespace
+     * Returns App namespace.
+     *
      * @return int|string
      */
     protected function getAppNamespace()
@@ -292,11 +307,12 @@ trait GeneratorTrait
             }
         }
 
-        throw new \RuntimeException("Unable to detect application namespace.");
+        throw new \RuntimeException('Unable to detect application namespace.');
     }
 
     /**
-     * Returns App namespace
+     * Returns App namespace.
+     *
      * @return int|string
      */
     protected function getTestsNamespace()
@@ -305,10 +321,10 @@ trait GeneratorTrait
 
         foreach ((array) data_get($composer, 'autoload-dev.psr-4') as $namespace => $path) {
             foreach ((array) $path as $pathChoice) {
-                    return $namespace;
+                return $namespace;
             }
         }
 
-        throw new \RuntimeException("Unable to detect application namespace.");
+        throw new \RuntimeException('Unable to detect application namespace.');
     }
 }
