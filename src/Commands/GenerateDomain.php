@@ -2,8 +2,8 @@
 
 namespace oleglfed\LaravelDDD\Commands;
 
-use Illuminate\Console\Command;
 use File;
+use Illuminate\Console\Command;
 use oleglfed\LaravelDDD\Traits\GeneratorTrait;
 
 class GenerateDomain extends Command
@@ -15,52 +15,56 @@ class GenerateDomain extends Command
     public $testPath;
 
     public $infrastructureContract =
-        __DIR__ . '/../../resources/Infrastructures/Template/Contracts/EloquentTemplateRepositoryInterface';
-    public $infrastructureClass = __DIR__ . '/../../resources/Infrastructures/Template/EloquentTemplateRepository';
+        __DIR__.'/../../resources/Infrastructures/Template/Contracts/EloquentTemplateRepositoryInterface';
+    public $infrastructureClass = __DIR__.'/../../resources/Infrastructures/Template/EloquentTemplateRepository';
 
-    public $domainInterfaceContract  = __DIR__ . '/../../resources/Domains/Template/Contracts/TemplateInterface';
+    public $domainInterfaceContract = __DIR__.'/../../resources/Domains/Template/Contracts/TemplateInterface';
     public $domainRepositoryContract = __DIR__
-                                        . '/../../resources/Domains/Template/Contracts/TemplateRepositoryInterface';
-    public $domainServiceContract    = __DIR__ . '/../../resources/Domains/Template/Contracts/TemplateServiceInterface';
+                                        .'/../../resources/Domains/Template/Contracts/TemplateRepositoryInterface';
+    public $domainServiceContract = __DIR__.'/../../resources/Domains/Template/Contracts/TemplateServiceInterface';
 
-    public $domainEloquent   = __DIR__ . '/../../resources/Domains/Template/TemplateEloquent';
-    public $domainRepository = __DIR__ . '/../../resources/Domains/Template/TemplateRepository';
-    public $domainService    = __DIR__ . '/../../resources/Domains/Template/TemplateService';
+    public $domainEloquent = __DIR__.'/../../resources/Domains/Template/TemplateEloquent';
+    public $domainRepository = __DIR__.'/../../resources/Domains/Template/TemplateRepository';
+    public $domainService = __DIR__.'/../../resources/Domains/Template/TemplateService';
 
-    public $domainEloquentTest   = __DIR__ . '/../../resources/Tests/TemplateInterfaceTest';
-    public $domainRepositoryTest = __DIR__ . '/../../resources/Tests/TemplateRepositoryTest';
-    public $domainServiceTest    = __DIR__ . '/../../resources/Tests/TemplateServiceTest';
+    public $domainEloquentTest = __DIR__.'/../../resources/Tests/TemplateInterfaceTest';
+    public $domainRepositoryTest = __DIR__.'/../../resources/Tests/TemplateRepositoryTest';
+    public $domainServiceTest = __DIR__.'/../../resources/Tests/TemplateServiceTest';
 
     public $abstractEloquentRepositoryInterface =
-        __DIR__ . '/../../resources/Infrastructures/Contracts/EloquentRepositoryInterface';
-    public $abstractEloquentRepository = __DIR__ . '/../../resources/Infrastructures/EloquentRepositoryAbstract';
-    public $abstractEloquent = __DIR__ . '/../../resources/Infrastructures/EloquentAbstract';
-    public $abstractRepository = __DIR__ . '/../../resources/Domains/RepositoryAbstract';
-    public $abstractService = __DIR__ . '/../../resources/Domains/ServiceAbstract';
-    public $abstractBaseEntityInterface = __DIR__ . '/../../resources/Domains/Contracts/BaseEntityInterface';
+        __DIR__.'/../../resources/Infrastructures/Contracts/EloquentRepositoryInterface';
+    public $abstractEloquentRepository = __DIR__.'/../../resources/Infrastructures/EloquentRepositoryAbstract';
+    public $abstractEloquent = __DIR__.'/../../resources/Infrastructures/EloquentAbstract';
+    public $abstractRepository = __DIR__.'/../../resources/Domains/RepositoryAbstract';
+    public $abstractService = __DIR__.'/../../resources/Domains/ServiceAbstract';
+    public $abstractBaseEntityInterface = __DIR__.'/../../resources/Domains/Contracts/BaseEntityInterface';
 
-    public $binding    = __DIR__ . '/../../resources/bind';
+    public $binding = __DIR__.'/../../resources/bind';
 
     /**
-     * Domain Name
+     * Domain Name.
+     *
      * @var
      */
     public $name;
 
     /**
-     * Directory Name
+     * Directory Name.
+     *
      * @var
      */
     public $directory;
 
     /**
-     * Table
+     * Table.
+     *
      * @var
      */
     public $table;
 
     /**
-     * Table fields
+     * Table fields.
+     *
      * @var
      */
     public $fields;
@@ -123,7 +127,7 @@ class GenerateDomain extends Command
 
         if (!$this->option('forced') and
             file_exists($this->getDomainPath("/{$this->name}/Contracts/{$this->name}Interface.php"))) {
-            return $this->comment("Domain already exists. Use --forced to override");
+            return $this->comment('Domain already exists. Use --forced to override');
         }
 
         //Get DB fields
@@ -148,7 +152,8 @@ class GenerateDomain extends Command
     }
 
     /**
-     * Prepare directories
+     * Prepare directories.
+     *
      * @return bool
      */
     public function createDirectories()
@@ -169,9 +174,9 @@ class GenerateDomain extends Command
             $this->copyAbstractClasses();
         }
 
-        $this->setDomainPath($this->getDomainPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
-        $this->setInfrastructurePath($this->getInfrastructurePath(DIRECTORY_SEPARATOR . $this->getDirectory()));
-        $this->setTestPath($this->getTestPath(DIRECTORY_SEPARATOR . $this->getDirectory()));
+        $this->setDomainPath($this->getDomainPath(DIRECTORY_SEPARATOR.$this->getDirectory()));
+        $this->setInfrastructurePath($this->getInfrastructurePath(DIRECTORY_SEPARATOR.$this->getDirectory()));
+        $this->setTestPath($this->getTestPath(DIRECTORY_SEPARATOR.$this->getDirectory()));
 
         if (!file_exists($this->getDomainPath())) {
             File::makeDirectory($this->getDomainPath());
@@ -241,12 +246,12 @@ class GenerateDomain extends Command
             );
         }
 
-
         return true;
     }
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function copyInfrastructure($name)
@@ -265,8 +270,10 @@ class GenerateDomain extends Command
     }
 
     /**
-     * Copy domains
+     * Copy domains.
+     *
      * @param $name
+     *
      * @return bool
      */
     public function copyDomain($name)
@@ -294,8 +301,10 @@ class GenerateDomain extends Command
     }
 
     /**
-     * Copy domains
+     * Copy domains.
+     *
      * @param $name
+     *
      * @return bool
      */
     public function copyTests($name)
@@ -307,7 +316,6 @@ class GenerateDomain extends Command
         return true;
     }
 
-
     public function copyBinding($name)
     {
         $name = strtolower($name);
@@ -316,6 +324,7 @@ class GenerateDomain extends Command
         }
 
         File::put(config_path("domains/$name-binding.php"), $this->prepare(File::get($this->binding)));
+
         return true;
     }
 }

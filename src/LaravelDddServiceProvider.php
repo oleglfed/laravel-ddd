@@ -1,4 +1,5 @@
 <?php
+
 namespace oleglfed\LaravelDDD;
 
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +14,6 @@ class LaravelDddServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 
     /**
@@ -29,7 +29,7 @@ class LaravelDddServiceProvider extends ServiceProvider
         $files = \File::allFiles(config_path('domains'));
 
         foreach ($files as $file) {
-            if ($bindings = $this->config->get('domains.' . basename($file->getFilename(), '.php'))) {
+            if ($bindings = $this->config->get('domains.'.basename($file->getFilename(), '.php'))) {
                 if (array_has($bindings, 'providers')) {
                     $this->provideService(array_get($bindings, 'providers'));
                 }
@@ -63,7 +63,7 @@ class LaravelDddServiceProvider extends ServiceProvider
         foreach ($eloquentRepositories as $name => $eloquentRepository) {
             $this->app->bind($name, function ($app) use ($eloquentRepository, $name) {
 
-                /**
+                /*
                  * Laravel 5.4 doesn't support $app->make with parameters. Uses contextual binding instead
                  */
                 $this->app->when($eloquentRepository['class'])
@@ -75,9 +75,9 @@ class LaravelDddServiceProvider extends ServiceProvider
         }
     }
 
-
     /**
-     * Provide repositories from packages
+     * Provide repositories from packages.
+     *
      * @param array $repositories
      *
      * @return void
